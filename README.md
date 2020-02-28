@@ -1,1 +1,1 @@
-# woo-billing
+# react-native-woosubs
