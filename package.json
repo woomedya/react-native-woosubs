@@ -1,0 +1,16 @@
+{
+  "name": "react-native-woosubs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/woomedya/react-native-woosubs.git"
+  },
+  "homepage": "https://github.com/woomedya/react-native-woosubs#readme",
+  "author": "woomedya",
+  "license": "MIT"
+}
