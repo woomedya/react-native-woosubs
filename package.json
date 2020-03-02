@@ -10,7 +10,6 @@
     "type": "git",
     "url": "git+https://github.com/woomedya/react-native-woosubs.git"
   },
-  "homepage": "https://github.com/woomedya/react-native-woosubs#readme",
   "author": "woomedya",
   "license": "MIT"
 }
