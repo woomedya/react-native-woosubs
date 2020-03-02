@@ -1,4 +1,4 @@
-import { request as iysRequest } from './request';
+import { iysRequest } from './request';
 
 
 const ItemSubs = async () => {
@@ -34,9 +34,7 @@ const ItemSkus = async () => {
 }
 
 const getAdmobVisible = async (productIds) => {
-    alert()
     try {
-
         async function get(productId) {
             return (await iysRequest({
                 categories: ["AdmobVisible"],
@@ -58,7 +56,6 @@ const getAdmobVisible = async (productIds) => {
 
         var responseJson = await getList(productIds);
 
-        console.log('AdmobVisible :=> ' + (responseJson.length > 0 ? !(responseJson.indexOf(false) > -1) : true).toString());
         return responseJson.length > 0 ? !(responseJson.indexOf(false) > -1) : true
 
     } catch (error) {

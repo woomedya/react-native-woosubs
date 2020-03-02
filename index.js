@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, ScrollView, Platform, FlatList, Dimensions, ActivityIndicator, TouchableOpacity, Linking } from "react-native";
-import { color } from './libs/color';
+import { color } from './libs/utilities/color';
 import { PricingCard, Button } from "react-native-elements";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import BillinglUtils from './libs/utilities/billinglutils';
-import { distinctByField } from './libs/array';
+import BillinglUtils from './libs/billing';
+import { distinctByField } from './libs/utilities/array';
 import opts from './libs/config';
 import i18n from './libs/locales';
-import BillingList from "./libs/billinglist"
+import BillingList from "./libs/api"
 
 export const config = ({
     wooServerUrl, publicKey, privateKey, applicationId, timeout, lang,
-    onChange
+    onChange, policyUrl
 }) => {
     opts.wooServerUrl = wooServerUrl;
     opts.privateKey = privateKey;
@@ -19,6 +19,7 @@ export const config = ({
     opts.applicationId = applicationId;
     opts.timeout = timeout;
     opts.lang = lang;
+    opts.policyUrl = policyUrl;
     opts.onChange = onChange;
 }
 
@@ -34,11 +35,10 @@ export const getAvailablePurchases = async () => {
         availableItems = []
     return availableItems;
 }
+
 export const purchasesClear = async () => {
     return await BillinglUtils.clear();
-
 }
-
 
 export const setLang = (lang) => {
     opts.lang = lang;
@@ -46,8 +46,8 @@ export const setLang = (lang) => {
 
 export const billingListGetAdmobVisible = async (value) => {
     return await BillingList.getAdmobVisible(value);
-
 }
+
 export default class BilllingComponent extends Component {
     restoredTitles = [];
     constructor(props) {
@@ -83,7 +83,6 @@ export default class BilllingComponent extends Component {
             productListt = (await BillinglUtils.getItems()).concat(await BillinglUtils.getSubscriptions());
             productListt = distinctByField(productListt, x => x.productId)
         } catch (error) {
-            // TODO: Bİllign herhangi hatada işlem yaptırılacaktır	
             productListt = []
         }
 
@@ -275,5 +274,4 @@ const styles = StyleSheet.create({
     rule: { fontSize: 10, top: 10, textAlign: "justify" },
     rowHeader: { flexDirection: "row", width: "100%", justifyContent: "space-between" },
     rowHeaderText: { fontSize: 10, },
-
 });

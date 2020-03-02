@@ -1,11 +1,10 @@
 import RNIap, {
     acknowledgePurchaseAndroid,
     purchaseUpdatedListener,
-    purchaseErrorListener,
 } from 'react-native-iap/index';
 import { Alert, Platform } from 'react-native';
-import { getPriceFromString } from './price';
-import BillingList from "../billinglist"
+import { getPriceFromString } from './utilities/price';
+import BillingList from "./api";
 import moment from 'moment';
 
 

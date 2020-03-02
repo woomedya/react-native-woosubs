@@ -5,6 +5,6 @@ export default opts = {
     applicationId: '',
     timeout: 20000,
     lang: "tr",
-    policyUrl: "https://google.com",
+    policyUrl: "",
     onChange: null
 };
