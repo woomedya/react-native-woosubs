@@ -11,7 +11,7 @@ import BillingList from "./libs/api"
 
 export const config = ({
     wooServerUrl, publicKey, privateKey, applicationId, timeout, lang,
-    onChange, policyUrl
+    onChange, policyUrl, primaryColor,
 }) => {
     opts.wooServerUrl = wooServerUrl;
     opts.privateKey = privateKey;
@@ -21,6 +21,7 @@ export const config = ({
     opts.lang = lang;
     opts.policyUrl = policyUrl;
     opts.onChange = onChange;
+    opts.primaryColor = primaryColor;
 }
 
 export const getAvailablePurchases = async () => {
@@ -33,6 +34,10 @@ export const getAvailablePurchases = async () => {
     }
     if (availableItems == undefined)
         availableItems = []
+
+    if (opts.onChange)
+        opts.onChange(availableItems);
+
     return availableItems;
 }
 
@@ -104,7 +109,6 @@ export default class BilllingComponent extends Component {
     billingPress = async (item) => {
         await BillinglUtils.buy(item.productId);
         await this.getAvailablePurchases();
-        if (opts.onChange) opts.onChange(this.state.availableItems);
     }
 
     billingCancell = () => {
@@ -122,7 +126,7 @@ export default class BilllingComponent extends Component {
         return <View style={styles.contetn}>
             <View style={[styles.root]}>
                 <PricingCard
-                    color={color.PRIMARY}
+                    color={opts.primaryColor}
                     title={item.title}
                     price={item.localizedPrice}
                     info={[item.description]}
@@ -173,7 +177,7 @@ export default class BilllingComponent extends Component {
                                     : <View style={{ marginTop: 10 }}>
                                         <Button icon={{ name: "payment", size: 15, color: "white" }}
                                             onPress={this.billingCancell}
-                                            buttonStyle={{ paddingHorizontal: 15, backgroundColor: color.PRIMARY }}
+                                            buttonStyle={{ paddingHorizontal: 15, backgroundColor: opts.primaryColor }}
                                             title={this.state.textBilling.yonetbuton}
                                         />
                                     </View>

@@ -7,7 +7,6 @@ import { getPriceFromString } from './utilities/price';
 import BillingList from "./api";
 import moment from 'moment';
 
-
 var billing = { itemSkus: [], itemSubs: [] },
     connection = null;
 
@@ -33,8 +32,7 @@ const billinListControl = async () => {
         }
     }
 }
-
-const clear = async () => {
+async function clear() {
     if (connection == null || connection == undefined)
         await connect();
 
