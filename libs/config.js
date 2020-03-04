@@ -2,8 +2,9 @@ export default opts = {
     wooServerUrl: '',
     publicKey: '',
     privateKey: '',
-    timeout: 20000,
+    tokenTimeout: 20000,
     lang: "tr",
+    locales: {},
     policyUrl: "",
     onChange: null,
     primaryColor: "#f3f3f3"

@@ -10,18 +10,19 @@ import i18n from './libs/locales';
 import BillingList from "./libs/api"
 
 export const config = ({
-    wooServerUrl, publicKey, privateKey, applicationId, timeout, lang,
-    onChange, policyUrl, primaryColor,
+    wooServerUrl, publicKey, privateKey, applicationId, tokenTimeout, lang,
+    onChange, policyUrl, primaryColor, locales
 }) => {
     opts.wooServerUrl = wooServerUrl;
     opts.privateKey = privateKey;
     opts.publicKey = publicKey;
     opts.applicationId = applicationId;
-    opts.timeout = timeout;
+    opts.tokenTimeout = tokenTimeout || opts.tokenTimeout;
     opts.lang = lang;
     opts.policyUrl = policyUrl;
     opts.onChange = onChange;
-    opts.primaryColor = primaryColor;
+    opts.primaryColor = primaryColor || opts.primaryColor;
+    opts.locales = locales || opts.locales;
 }
 
 export const getAvailablePurchases = async () => {

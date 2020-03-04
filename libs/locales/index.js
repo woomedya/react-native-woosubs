@@ -5,7 +5,10 @@ import opts from '../config';
 
 export default () => {
   var lang = opts.lang;
-  if (lang == 'tr')
+
+  if (opts.locales[lang])
+    return locales[lang];
+  else if (lang == 'tr')
     return tr;
   else if (lang == 'en')
     return en;
