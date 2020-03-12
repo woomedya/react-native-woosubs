@@ -1,47 +1,15 @@
 {
-  "_from": "react-native-woosubs@^1.0.1",
-  "_id": "react-native-woosubs@1.0.2",
-  "_inBundle": false,
-  "_integrity": "sha512-epeZd0TLEJGjzt2+CyTuzH9j/J3vxlB6T+nBZ0DpYGmCvCEXFBweRSfoKSfSHpeSTJ3R95SjpC/WHYlk2UwvRw==",
-  "_location": "/react-native-woosubs",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "range",
-    "registry": true,
-    "raw": "react-native-woosubs@^1.0.1",
-    "name": "react-native-woosubs",
-    "escapedName": "react-native-woosubs",
-    "rawSpec": "^1.0.1",
-    "saveSpec": null,
-    "fetchSpec": "^1.0.1"
-  },
-  "_requiredBy": [
-    "#USER",
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/react-native-woosubs/-/react-native-woosubs-1.0.2.tgz",
-  "_shasum": "6c99ffeb7271074cbc42c9a88caea13733212068",
-  "_spec": "react-native-woosubs@^1.0.1",
-  "_where": "/Users/woomobil/WooMedya/rtur",
-  "author": {
-    "name": "woomedya"
-  },
-  "bugs": {
-    "url": "https://github.com/woomedya/react-native-woosubs/issues"
-  },
-  "bundleDependencies": false,
-  "deprecated": false,
+  "name": "react-native-woosubs",
+  "version": "1.0.3",
   "description": "",
   "homepage": "https://github.com/woomedya/react-native-woosubs#readme",
   "license": "MIT",
   "main": "index.js",
-  "name": "react-native-woosubs",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/woomedya/react-native-woosubs.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "version": "1.0.2"
+  }
 }
