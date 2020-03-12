@@ -23,6 +23,8 @@ export const config = ({
     opts.onChange = onChange;
     opts.primaryColor = primaryColor || opts.primaryColor;
     opts.locales = locales || opts.locales;
+
+    getAvailablePurchases();
 }
 
 export const getAvailablePurchases = async () => {
