@@ -7,7 +7,7 @@ export default () => {
   var lang = opts.lang;
 
   if (opts.locales[lang])
-    return locales[lang];
+    return opts.locales[lang];
   else if (lang == 'tr')
     return tr;
   else if (lang == 'en')

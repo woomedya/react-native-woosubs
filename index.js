@@ -55,13 +55,12 @@ export const billingListGetAdmobVisible = async (value) => {
 }
 
 export default class BilllingComponent extends Component {
-    restoredTitles = [];
+
     constructor(props) {
         super(props)
         this.props = props;
         this.state = {
-            availableItemsMessage: this.restoredTitles,
-            textBilling: i18n().textBilling,
+            i18n: i18n(),
             loading: true,
             productList: [],
             availableItems: [],
@@ -134,7 +133,7 @@ export default class BilllingComponent extends Component {
                     titleStyle={{ fontSize: 20, }}
                     pricingStyle={{ fontSize: 22 }}
                     containerStyle={styles.pricingCard}
-                    button={{ title: this.state.textBilling.select, icon: 'payment' }}
+                    button={{ title: this.state.i18n.select, icon: 'payment' }}
                     onButtonPress={() => this.billingPress(item)}
                 />
             </View>
@@ -153,16 +152,16 @@ export default class BilllingComponent extends Component {
                         <View style={styles.headerRow}>
                             <View style={styles.rowHeader}>
                                 <TouchableOpacity onPress={this.openPrivacyPolicy}>
-                                    <Text style={styles.rowHeaderText}>{this.state.textBilling.policy}</Text>
+                                    <Text style={styles.rowHeaderText}>{this.state.i18n.policy}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={this.refresh}>
-                                    <Text style={styles.rowHeaderText}>{this.state.textBilling.refresh}</Text>
+                                    <Text style={styles.rowHeaderText}>{this.state.i18n.refresh}</Text>
                                 </TouchableOpacity>
                             </View>
                             <Icon name={this.state.availableItems.length > 0 ? "star" : "star-off"} color={color.SUN_FLOWER} style={styles.star} />
                             {
                                 this.state.availableItems.length == 0 && this.state.loading == false ?
-                                    <Text>{this.state.textBilling.standartAbone}</Text> :
+                                    <Text>{this.state.i18n.standartAbone}</Text> :
                                     this.state.availableItems.filter((x, i) => this.state.availableItems.indexOf(x) == i).map(type => {
                                         return <Text key={type}>{this.state.productList.find(x => x.productId == type).title}</Text>
                                     })
@@ -171,7 +170,7 @@ export default class BilllingComponent extends Component {
                                 this.state.availableItems.length == 0 ?
                                     this.state.loading ?
                                         <View>
-                                            <Text style={{ marginBottom: 10 }}>{this.state.textBilling.loading}</Text>
+                                            <Text style={{ marginBottom: 10 }}>{this.state.i18n.loading}</Text>
                                             <ActivityIndicator size="small" color={color.SILVER} />
                                         </View>
                                         : null
@@ -179,11 +178,11 @@ export default class BilllingComponent extends Component {
                                         <Button icon={{ name: "payment", size: 15, color: "white" }}
                                             onPress={this.billingCancell}
                                             buttonStyle={{ paddingHorizontal: 15, backgroundColor: opts.primaryColor }}
-                                            title={this.state.textBilling.yonetbuton}
+                                            title={this.state.i18n.yonetbuton}
                                         />
                                     </View>
                             }
-                            <Text style={styles.rule}>{this.state.textBilling.kural}</Text>
+                            <Text style={styles.rule}>{this.state.i18n.rule}</Text>
                         </View>
                     </View>
 

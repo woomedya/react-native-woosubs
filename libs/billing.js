@@ -2,7 +2,7 @@ import RNIap, {
     acknowledgePurchaseAndroid,
     purchaseUpdatedListener,
 } from 'react-native-iap/index';
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { getPriceFromString } from './utilities/price';
 import BillingList from "./api";
 import moment from 'moment';
@@ -118,7 +118,6 @@ async function getAvailablePurchases() {
         return restoredTitles;
 
     } catch (err) {
-        Alert.alert("Bağlanamadı", err.message)
         return []
     }
 
