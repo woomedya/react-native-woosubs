@@ -1,22 +1,12 @@
 import Crypto from 'woo-crypto';
 import { getUTCTime } from 'woo-utilities/date';
 import opts from '../config';
-import Axios from "axios";
+import { post } from 'woo-utilities/request';
 import { Platform } from 'react-native';
 
 const url = {
     itemSubs: '/woosubs/itemsubs',
     itemSkus: '/woosubs/itemskus'
-}
-
-const post = async (baseURL, url, headers, data) => {
-    var instance = Axios.create({
-        baseURL: baseURL,
-        timeout: 10000,
-        headers: { 'Content-Type': 'application/json', ...headers }
-    });
-    var responseJson = await instance.post(url, data);
-    return responseJson.data
 }
 
 const getSubItems = async () => {
