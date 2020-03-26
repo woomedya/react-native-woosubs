@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, ScrollView, Platform, FlatList, Dimensions, ActivityIndicator, TouchableOpacity, Linking } from "react-native";
-import { color } from './libs/utilities/color';
+import { color } from './libs/color';
 import { PricingCard, Button } from "react-native-elements";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import BillinglUtils from './libs/billing';
-import { distinctByField } from './libs/utilities/array';
-import opts from './libs/config';
+import purchase from './libs/purchase';
+import { distinctByField } from 'woo-utilities/array';
+import opts from './config';
 import i18n from './libs/locales';
-import BillingList from "./libs/api"
+
+const width = Dimensions.get('window').width / 2 - 15;
 
 export const config = ({
     wooServerUrl, publicKey, privateKey, applicationId, tokenTimeout, lang,
@@ -27,10 +28,18 @@ export const config = ({
     getAvailablePurchases();
 }
 
-export const getAvailablePurchases = async () => {
+export const purchasesClear = async () => {
+    return await purchase.clear();
+}
+
+export const setLang = (lang) => {
+    opts.lang = lang;
+}
+
+const getAvailablePurchases = async () => {
     var availableItems = [];
     try {
-        availableItems = await BillinglUtils.getAvailablePurchases();
+        availableItems = await purchase.getAvailablePurchases();
         availableItems = distinctByField(availableItems, x => x);
     } catch (error) {
         availableItems = []
@@ -44,20 +53,7 @@ export const getAvailablePurchases = async () => {
     return availableItems;
 }
 
-export const purchasesClear = async () => {
-    return await BillinglUtils.clear();
-}
-
-export const setLang = (lang) => {
-    opts.lang = lang;
-}
-
-export const billingListGetAdmobVisible = async (value) => {
-    return await BillingList.getAdmobVisible(value);
-}
-
 export default class BilllingComponent extends Component {
-
     constructor(props) {
         super(props)
         this.props = props;
@@ -70,10 +66,10 @@ export default class BilllingComponent extends Component {
     }
 
     async componentDidMount() {
-        this.initBillingPage();
+        this.refresh();
     }
 
-    initBillingPage = async () => {
+    refresh = async () => {
         this.setState({
             loading: true,
             productList: [],
@@ -87,7 +83,7 @@ export default class BilllingComponent extends Component {
     getProductList = async () => {
         var productListt;
         try {
-            productListt = (await BillinglUtils.getItems()).concat(await BillinglUtils.getSubscriptions());
+            productListt = (await purchase.getItems()).concat(await purchase.getSubscriptions());
             productListt = distinctByField(productListt, x => x.productId)
         } catch (error) {
             productListt = []
@@ -108,23 +104,23 @@ export default class BilllingComponent extends Component {
         });
     }
 
-    billingPress = async (item) => {
-        await BillinglUtils.buy(item.productId);
+    buy = async (item) => {
+        await purchase.buy(item.productId);
         await this.getAvailablePurchases();
     }
 
-    billingCancell = () => {
+    cancel = () => {
         if (Platform.OS == "ios")
             Linking.openURL('https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions')
         else
             Linking.openURL('https://play.google.com/store/account/subscriptions?package=' + deviceinfo.getApplicationName());
     }
 
-    refresh = async () => {
-        this.initBillingPage();
-    }
+    openPrivacyPolicy = () => {
+        Linking.openURL(opts.policyUrl);
+    };
 
-    Item = ({ item }) => {
+    renderItem = ({ item }) => {
         return <View style={styles.contetn}>
             <View style={[styles.root]}>
                 <PricingCard
@@ -136,15 +132,11 @@ export default class BilllingComponent extends Component {
                     pricingStyle={{ fontSize: 22 }}
                     containerStyle={styles.pricingCard}
                     button={{ title: this.state.i18n.select, icon: 'payment' }}
-                    onButtonPress={() => this.billingPress(item)}
+                    onButtonPress={() => this.buy(item)}
                 />
             </View>
         </View>
     }
-
-    openPrivacyPolicy = () => {
-        Linking.openURL(opts.policyUrl);
-    };
 
     render() {
         return (
@@ -178,7 +170,7 @@ export default class BilllingComponent extends Component {
                                         : null
                                     : <View style={{ marginTop: 10 }}>
                                         <Button icon={{ name: "payment", size: 15, color: "white" }}
-                                            onPress={this.billingCancell}
+                                            onPress={this.cancel}
                                             buttonStyle={{ paddingHorizontal: 15, backgroundColor: opts.primaryColor }}
                                             title={this.state.i18n.yonetbuton}
                                         />
@@ -191,7 +183,7 @@ export default class BilllingComponent extends Component {
                     <FlatList
                         style={{ flex: 1, left: 7 }}
                         data={this.state.productList.filter(p => this.state.availableItems.indexOf(p.productId) == -1)}
-                        renderItem={this.Item}
+                        renderItem={this.renderItem}
                         numColumns={2}
                         keyExtractor={(item, index) => index.toString()}
                     />
@@ -201,8 +193,6 @@ export default class BilllingComponent extends Component {
         );
     }
 }
-
-const width = Dimensions.get('window').width / 2 - 15;
 
 const styles = StyleSheet.create({
     container: {

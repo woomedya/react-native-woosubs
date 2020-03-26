@@ -1,7 +1,7 @@
 
 import tr from './tr';
 import en from './en';
-import opts from '../config';
+import opts from '../../config';
 
 export default () => {
   var lang = opts.lang;

@@ -1,70 +1,59 @@
-import { iysRequest } from './request';
+import Crypto from 'woo-crypto';
+import { getUTCTime } from 'woo-utilities/date';
+import opts from '../config';
+import Axios from "axios";
+import { Platform } from 'react-native';
 
-
-const ItemSubs = async () => {
-    try {
-        var responseJson = (await iysRequest(
-            {
-                categories: ["ItemSubs"],
-                tags: [],
-                content: {}
-            }));
-        return responseJson.length ? responseJson[0].content : { ios: [], android: [] };
-    } catch (error) {
-        return { ios: [], android: [] };
-
-    }
-
+const url = {
+    itemSubs: '/woosubs/itemsubs',
+    itemSkus: '/woosubs/itemskus'
 }
 
-const ItemSkus = async () => {
+const post = async (baseURL, url, headers, data) => {
+    var instance = Axios.create({
+        baseURL: baseURL,
+        timeout: 10000,
+        headers: { 'Content-Type': 'application/json', ...headers }
+    });
+    var responseJson = await instance.post(url, data);
+    return responseJson.data
+}
+
+const getSubItems = async () => {
     try {
-        var responseJson = (await iysRequest(
-            {
-                categories: ["ItemSkus"],
-                tags: [],
-                content: {}
-            }));
-        return responseJson.length ? responseJson[0].content : { ios: [], android: [] };
+        var type = 'woosubs.itemsubs';
+        var token = (Crypto.encrypt(JSON.stringify({ expire: getUTCTime(opts.tokenTimeout).toString(), type }), opts.publicKey, opts.privateKey));
+        var result = await post(opts.wooServerUrl, url.itemSubs, {
+            public: opts.publicKey,
+            token
+        }, {
+            os: Platform.OS
+        });
 
+        return result.data || { ios: [], android: [] };
     } catch (error) {
-        return { ios: [], android: [] };
-
+        return { ios: [], android: [] }
     }
 }
 
-const getAdmobVisible = async (productIds) => {
+const getSkuItems = async () => {
     try {
-        async function get(productId) {
-            return (await iysRequest({
-                categories: ["AdmobVisible"],
-                tags: [productId],
-                content: {}
-            })).map(item => item.content.value);
-        }
+        var type = 'woosubs.itemskus';
+        var token = (Crypto.encrypt(JSON.stringify({ expire: getUTCTime(opts.tokenTimeout).toString(), type }), opts.publicKey, opts.privateKey));
+        var result = await post(opts.wooServerUrl, url.itemSkus, {
+            public: opts.publicKey,
+            token
+        }, {
+            os: Platform.OS
+        });
 
-        async function getList(productIds2) {
-            if (productIds2.length > 1) {
-                return (await get(productIds2[0]))
-                    .concat(await getList(productIds2.filter((e, i) => i > 0)));
-            } else if (productIds2.length) {
-                return await get(productIds2[0]);
-            } else {
-                return [];
-            }
-        }
-
-        var responseJson = await getList(productIds);
-
-        return responseJson.length > 0 ? !(responseJson.indexOf(false) > -1) : true
-
+        return result.data || { ios: [], android: [] };
     } catch (error) {
-        return true
-
+        return { ios: [], android: [] }
     }
 }
 
 export default {
-    ItemSubs, ItemSkus, getAdmobVisible
+    getSubItems, getSkuItems
 }
 

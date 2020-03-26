@@ -3,33 +3,28 @@ import RNIap, {
     purchaseUpdatedListener,
 } from 'react-native-iap/index';
 import { Platform } from 'react-native';
-import { getPriceFromString } from './utilities/price';
-import BillingList from "./api";
+import { getPriceFromString } from 'woo-utilities/price';
+import woosubsApi from "./api";
 import moment from 'moment';
 
-var billing = { itemSkus: [], itemSubs: [] },
+var purchaseList = { itemSkus: [], itemSubs: [] },
     connection = null;
 
-var billingItemSubsRaw;
-var billingItemSkusRaw;
+var purchaseSubsRawList;
+var purchaseSkusRawList;
 
-const billinListControl = async () => {
-    if (billingItemSubsRaw == null || billingItemSkusRaw == null) {
+const purchaseListControl = async () => {
+    if (purchaseSubsRawList == null || purchaseSkusRawList == null) {
 
-        billingItemSubsRaw = await BillingList.ItemSubs();
-        billingItemSkusRaw = await BillingList.ItemSkus();
+        purchaseSubsRawList = await woosubsApi.getSubItems();
+        purchaseSkusRawList = await woosubsApi.getSkuItems();
 
         const filter = (list) => {
             return list.filter((x) => x.visible == true).map((item) => item.key);
         }
 
-        if (Platform.OS == "ios") {
-            billing.itemSubs = filter(billingItemSubsRaw.ios);
-            billing.itemSkus = filter(billingItemSkusRaw.ios);
-        } else {
-            billing.itemSubs = filter(billingItemSubsRaw.android);
-            billing.itemSkus = filter(billingItemSkusRaw.android);
-        }
+        purchaseList.itemSubs = filter(purchaseSubsRawList);
+        purchaseList.itemSkus = filter(purchaseSkusRawList);
     }
 }
 async function clear() {
@@ -58,14 +53,14 @@ const connect = async () => {
  * Satın alınabilecek ürünlerin listesini map olarak getiriyor böylelikle içinden gerçek veriler çekilebiliyor
  */
 async function getItems() {
-    await billinListControl();
+    await purchaseListControl();
 
     var products = [];
     try {
         if (connection == null || connection == undefined)
             await connect();
 
-        products = await RNIap.getProducts(billing.itemSkus);
+        products = await RNIap.getProducts(purchaseList.itemSkus);
         return products.sort((x, y) => getPriceFromString(x.localizedPrice) < getPriceFromString(y.localizedPrice) ? -1 : 1);
     } catch (err) {
         return [];
@@ -73,14 +68,14 @@ async function getItems() {
 }
 
 async function getSubscriptions() {
-    await billinListControl();
+    await purchaseListControl();
 
     var products = [];
     try {
         if (connection == null || connection == undefined)
             await connect();
 
-        products = await RNIap.getSubscriptions(billing.itemSubs);
+        products = await RNIap.getSubscriptions(purchaseList.itemSubs);
         return products.sort((x, y) => getPriceFromString(x.localizedPrice) < getPriceFromString(y.localizedPrice) ? -1 : 1);
     } catch (err) {
         return [];
@@ -91,7 +86,7 @@ async function getSubscriptions() {
  * Satın alınmış ürünlerin listesinin adlarını dizi olarak getiriyor.
  */
 async function getAvailablePurchases() {
-    await billinListControl();
+    await purchaseListControl();
     var restoredTitles = [];
     try {
         if (connection == null || connection == undefined)
@@ -108,9 +103,9 @@ async function getAvailablePurchases() {
 
         for (let index = 0; index < purchases.length; index++) {
             var purchase = purchases[index]
-            if (billing.itemSubs.indexOf(purchase.productId) > -1) {
+            if (purchaseList.itemSubs.indexOf(purchase.productId) > -1) {
                 restoredTitles.push(purchase.productId);
-            } else if (billing.itemSkus.indexOf(purchase.productId) > -1) {
+            } else if (purchaseList.itemSkus.indexOf(purchase.productId) > -1) {
                 restoredTitles.push(purchase.productId);
             }
         }
@@ -124,7 +119,7 @@ async function getAvailablePurchases() {
 }
 
 async function buy(productId) {
-    if (billing.itemSkus.indexOf(productId) > -1) {
+    if (purchaseList.itemSkus.indexOf(productId) > -1) {
         await buyItem(productId);
     } else {
         await buySubscription(productId);
@@ -194,8 +189,6 @@ export default {
     getItems,
     getSubscriptions,
     buy,
-    buyItem,
-    buySubscription,
     getAvailablePurchases,
     clear
 }
