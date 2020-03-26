@@ -11,13 +11,12 @@ import i18n from './libs/locales';
 const width = Dimensions.get('window').width / 2 - 15;
 
 export const config = ({
-    wooServerUrl, publicKey, privateKey, applicationId, tokenTimeout, lang,
+    wooServerUrl, publicKey, privateKey, tokenTimeout, lang,
     onChange, policyUrl, primaryColor, locales
 }) => {
     opts.wooServerUrl = wooServerUrl;
     opts.privateKey = privateKey;
     opts.publicKey = publicKey;
-    opts.applicationId = applicationId;
     opts.tokenTimeout = tokenTimeout || opts.tokenTimeout;
     opts.lang = lang;
     opts.policyUrl = policyUrl;
