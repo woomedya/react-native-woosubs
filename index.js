@@ -109,8 +109,13 @@ export default class BilllingComponent extends Component {
     }
 
     cancel = () => {
-        if (Platform.OS == "ios")
-            Linking.openURL('https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions')
+        if (Platform.OS == "ios") {
+            const majorVersionIOS = parseInt(Platform.Version, 10);
+            if (majorVersionIOS <= 12)
+                Linking.openURL('https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions')
+            else
+                Linking.openURL('https://apps.apple.com/account/subscriptions')
+        }
         else
             Linking.openURL('https://play.google.com/store/account/subscriptions?package=' + deviceinfo.getApplicationName());
     }
