@@ -20,9 +20,9 @@ const getSubItems = async () => {
             os: Platform.OS
         });
 
-        return result.data || { ios: [], android: [] };
+        return result.data.data || [];
     } catch (error) {
-        return { ios: [], android: [] }
+        return [];
     }
 }
 
@@ -37,9 +37,9 @@ const getSkuItems = async () => {
             os: Platform.OS
         });
 
-        return result.data || { ios: [], android: [] };
+        return result.data.data || [];
     } catch (error) {
-        return { ios: [], android: [] }
+        return [];
     }
 }
 
