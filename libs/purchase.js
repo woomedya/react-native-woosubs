@@ -6,6 +6,7 @@ import { Platform } from 'react-native';
 import { getPriceFromString } from 'woo-utilities/price';
 import woosubsApi from "./api";
 import moment from 'moment';
+import { distinctByField } from 'woo-utilities/array';
 
 var purchaseList = { itemSkus: [], itemSubs: [] },
     connection = null;
@@ -94,12 +95,11 @@ async function getAvailablePurchases() {
 
         var purchases;
         purchases = await RNIap.getAvailablePurchases();
+        purchases = distinctByField(purchases, x => x == x);
 
-        if (Platform.OS == "ios") {
-            purchases = purchases.filter((purchase) => {
-                return new Date().toISOString() < moment(new Date(purchase.transactionDate)).add(1, 'M').toISOString();
-            });
-        }
+        purchases = purchases.filter((purchase) => {
+            return new Date().toISOString() < moment(new Date(purchase.transactionDate)).add(purchaseSubsRawList.filter(x => x.visible).find(x => x.key == purchase.productId).duration, 'd').toISOString();
+        });
 
         for (let index = 0; index < purchases.length; index++) {
             var purchase = purchases[index]
