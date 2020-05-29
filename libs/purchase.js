@@ -98,7 +98,11 @@ async function getAvailablePurchases() {
         purchases = distinctByField(purchases, x => x == x);
 
         purchases = purchases.filter((purchase) => {
-            return new Date().toISOString() < moment(new Date(purchase.transactionDate)).add(purchaseSubsRawList.filter(x => x.visible).find(x => x.key == purchase.productId).duration, 'd').toISOString();
+            var subs = purchaseSubsRawList.filter(x => x.visible).find(x => x.key == purchase.productId);
+            if (!subs)
+                return true;
+            else
+                return new Date().toISOString() < moment(new Date(purchase.transactionDate)).add(subs.duration, 'd').toISOString();
         });
 
         for (let index = 0; index < purchases.length; index++) {
