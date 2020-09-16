@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Text, ScrollView, Platform, FlatList, Dimensions, ActivityIndicator, TouchableOpacity, Linking } from "react-native";
+import { StyleSheet, View, Text, ScrollView, Platform, FlatList, Dimensions, ActivityIndicator, TouchableOpacity, Linking, Clipboard, Alert } from "react-native";
 import { color } from './libs/color';
 import { PricingCard, Button } from "react-native-elements";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,7 +12,7 @@ const width = Dimensions.get('window').width / 2 - 15;
 
 export const config = ({
     wooServerUrl, publicKey, privateKey, tokenTimeout, lang,
-    onChange, policyUrl, primaryColor, locales
+    onChange, policyUrl, primaryColor, locales, deviceId
 }) => {
     opts.wooServerUrl = wooServerUrl;
     opts.privateKey = privateKey;
@@ -23,6 +23,7 @@ export const config = ({
     opts.onChange = onChange;
     opts.primaryColor = primaryColor || opts.primaryColor;
     opts.locales = locales || opts.locales;
+    opts.deviceId = deviceId || opts.deviceId;
 
     getAvailablePurchases();
 }
@@ -39,6 +40,7 @@ const getAvailablePurchases = async () => {
     var availableItems = [];
     try {
         availableItems = await purchase.getAvailablePurchases();
+
         availableItems = distinctByField(availableItems, x => x);
     } catch (error) {
         availableItems = []
@@ -90,11 +92,14 @@ export default class BilllingComponent extends Component {
 
         this.setState({
             productList: productListt,
+            availableItems: this.props.purchases || [],
         });
     }
 
     getAvailablePurchases = async () => {
         var availableItems = await getAvailablePurchases();
+        availableItems = availableItems.concat(this.props.purchases || []);
+
         await new Promise(res => {
             this.setState({
                 availableItems,
@@ -123,6 +128,18 @@ export default class BilllingComponent extends Component {
     openPrivacyPolicy = () => {
         Linking.openURL(opts.policyUrl);
     };
+
+    copyDeviceId = () => {
+        Clipboard.setString(opts.deviceId);
+        // alert(this.state.i18n.copied);
+        Alert.alert(
+            this.state.i18n.copiedTitle,
+            this.state.i18n.copied,
+            [
+                { text: this.state.i18n.ok  },
+            ],
+        );
+    }
 
     renderItem = ({ item }) => {
         return <View style={styles.contetn}>
@@ -181,6 +198,14 @@ export default class BilllingComponent extends Component {
                                     </View>
                             }
                             <Text style={styles.rule}>{this.state.i18n.rule}</Text>
+                            <View style={styles.deviceIdContainer}>
+                                <Text style={styles.deviceId} onPress={this.copyDeviceId} >{this.state.i18n.copyDeviceId}</Text>
+                                <Icon name={"content-copy"} 
+                                        color={color.BLACK} 
+                                        style={styles.copyDeviceId}
+                                        onPress={this.copyDeviceId}
+                                        />
+                            </View>
                         </View>
                     </View>
 
@@ -272,6 +297,9 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     rule: { fontSize: 10, top: 10, textAlign: "justify" },
+    deviceId: { fontSize: 10, paddingTop: 5, paddingBottom: 10, textAlign: "left" },
+    deviceIdContainer: { top: 20, width: "100%", flexDirection: "row", justifyContent: "flex-start", textAlign: "left" },
+    copyDeviceId: { marginLeft: 5, fontSize: 20 },
     rowHeader: { flexDirection: "row", width: "100%", justifyContent: "space-between" },
     rowHeaderText: { fontSize: 10, },
 });

@@ -7,5 +7,6 @@ export default opts = {
     locales: {},
     policyUrl: "",
     onChange: null,
-    primaryColor: "#f3f3f3"
+    primaryColor: "#f3f3f3",
+    deviceId: ""
 };
