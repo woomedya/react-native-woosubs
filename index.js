@@ -92,7 +92,7 @@ export default class BilllingComponent extends Component {
 
         this.setState({
             productList: productListt,
-            availableItems: this.props.purchases || [],
+            availableItems: productListt.length ?  this.props.purchases || [] : [],
         });
     }
 
