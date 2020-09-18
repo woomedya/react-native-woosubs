@@ -1,6 +1,6 @@
 {
   "name": "react-native-woosubs",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "",
   "homepage": "https://github.com/woomedya/react-native-woosubs#readme",
   "license": "MIT",
@@ -13,6 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "woo-utilities": "^1.0.9"
+    "woo-utilities": "^1.0.9",
+    "jutore": "^1.0.0"
   }
 }

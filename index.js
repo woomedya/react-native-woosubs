@@ -7,6 +7,7 @@ import purchase from './libs/purchase';
 import { distinctByField } from 'woo-utilities/array';
 import opts from './config';
 import i18n from './libs/locales';
+import * as purchaseStore from './libs/stores/Purchases';
 
 const width = Dimensions.get('window').width / 2 - 15;
 
@@ -36,6 +37,10 @@ export const setLang = (lang) => {
     opts.lang = lang;
 }
 
+export const setPurchase = (purchases) => {
+    purchaseStore.set(purchases);
+}
+
 const getAvailablePurchases = async () => {
     var availableItems = [];
     try {
@@ -63,11 +68,18 @@ export default class BilllingComponent extends Component {
             loading: true,
             productList: [],
             availableItems: [],
+            purchases: purchaseStore.getPurchases()
         }
     }
 
     async componentDidMount() {
         this.refresh();
+
+        purchaseStore.default.addListener(purchaseStore.PURCHASES, () => {
+			this.setState({
+				purchases: purchaseStore.getPurchases()
+			})
+		})
     }
 
     refresh = async () => {
@@ -92,13 +104,13 @@ export default class BilllingComponent extends Component {
 
         this.setState({
             productList: productListt,
-            availableItems: productListt.length ?  this.props.purchases || [] : [],
+            availableItems: productListt.length ?  this.state.purchases || [] : [],
         });
     }
 
     getAvailablePurchases = async () => {
         var availableItems = await getAvailablePurchases();
-        availableItems = availableItems.concat(this.props.purchases || []);
+        availableItems = availableItems.concat(this.state.purchases || []);
 
         await new Promise(res => {
             this.setState({
