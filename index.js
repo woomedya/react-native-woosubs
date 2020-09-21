@@ -76,10 +76,10 @@ export default class BilllingComponent extends Component {
         this.refresh();
 
         purchaseStore.default.addListener(purchaseStore.PURCHASES, () => {
-			this.setState({
-				purchases: purchaseStore.getPurchases()
-			})
-		})
+            this.setState({
+                purchases: purchaseStore.getPurchases()
+            }, this.getProductList);
+        })
     }
 
     refresh = async () => {
@@ -102,9 +102,12 @@ export default class BilllingComponent extends Component {
             productListt = []
         }
 
+        var purchases = this.state.purchases.length == 0 ? purchaseStore.getPurchases() : this.state.purchases;
+
         this.setState({
+            purchases,
             productList: productListt,
-            availableItems: productListt.length ?  this.state.purchases || [] : [],
+            availableItems: productListt.length ? purchases || [] : [],
         });
     }
 
@@ -148,7 +151,7 @@ export default class BilllingComponent extends Component {
             this.state.i18n.copiedTitle,
             this.state.i18n.copied,
             [
-                { text: this.state.i18n.ok  },
+                { text: this.state.i18n.ok },
             ],
         );
     }
@@ -212,11 +215,11 @@ export default class BilllingComponent extends Component {
                             <Text style={styles.rule}>{this.state.i18n.rule}</Text>
                             <View style={styles.deviceIdContainer}>
                                 <Text style={styles.deviceId} onPress={this.copyDeviceId} >{this.state.i18n.copyDeviceId}</Text>
-                                <Icon name={"content-copy"} 
-                                        color={color.BLACK} 
-                                        style={styles.copyDeviceId}
-                                        onPress={this.copyDeviceId}
-                                        />
+                                <Icon name={"content-copy"}
+                                    color={color.BLACK}
+                                    style={styles.copyDeviceId}
+                                    onPress={this.copyDeviceId}
+                                />
                             </View>
                         </View>
                     </View>
