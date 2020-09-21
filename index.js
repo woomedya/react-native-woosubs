@@ -193,7 +193,7 @@ export default class BilllingComponent extends Component {
                                     this.state.productList.length > 0 ?
                                         this.state.availableItems.filter((x, i) => this.state.availableItems.indexOf(x) == i).map(type => {
                                             return <Text key={type}>{this.state.productList.find(x => x.productId == type).title}</Text>
-                                        }) : <Text>{this.state.i18n.standartAbone}</Text>
+                                        }) : null
                             }
                             {
                                 this.state.availableItems.length == 0 ?
