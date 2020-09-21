@@ -101,17 +101,18 @@ export default class BilllingComponent extends Component {
             productListt = []
         }
 
-        var availableItems = this.state.availableItems.length == 0 ? purchaseStore.getPurchases() : this.state.availableItems;
+        var ais = this.state.availableItems.length == 0 ? purchaseStore.getPurchases() : this.state.availableItems;
 
         this.setState({
             productList: productListt,
-            availableItems,
+            availableItems: ais,
         });
     }
 
     getAvailablePurchases = async () => {
         var availableItems = await getAvailablePurchases();
-        availableItems = availableItems.concat(this.state.availableItems || []);
+        var ais = this.state.availableItems.length == 0 ? purchaseStore.getPurchases() : this.state.availableItems;
+        availableItems = (availableItems || []).concat(ais);
 
         await new Promise(res => {
             this.setState({
