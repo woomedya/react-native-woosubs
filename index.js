@@ -67,8 +67,7 @@ export default class BilllingComponent extends Component {
             i18n: i18n(),
             loading: true,
             productList: [],
-            availableItems: [],
-            purchases: purchaseStore.getPurchases()
+            availableItems: purchaseStore.getPurchases(),
         }
     }
 
@@ -77,8 +76,8 @@ export default class BilllingComponent extends Component {
 
         purchaseStore.default.addListener(purchaseStore.PURCHASES, () => {
             this.setState({
-                purchases: purchaseStore.getPurchases()
-            }, this.getProductList);
+                availableItems: purchaseStore.getPurchases()
+            });
         })
     }
 
@@ -86,7 +85,7 @@ export default class BilllingComponent extends Component {
         this.setState({
             loading: true,
             productList: [],
-            availableItems: [],
+            availableItems: purchaseStore.getPurchases(),
         }, async () => {
             await this.getProductList();
             this.getAvailablePurchases();
@@ -102,18 +101,17 @@ export default class BilllingComponent extends Component {
             productListt = []
         }
 
-        var purchases = this.state.purchases.length == 0 ? purchaseStore.getPurchases() : this.state.purchases;
+        var availableItems = this.state.availableItems.length == 0 ? purchaseStore.getPurchases() : this.state.availableItems;
 
         this.setState({
-            purchases,
             productList: productListt,
-            availableItems: productListt.length ? purchases || [] : [],
+            availableItems,
         });
     }
 
     getAvailablePurchases = async () => {
         var availableItems = await getAvailablePurchases();
-        availableItems = availableItems.concat(this.state.purchases || []);
+        availableItems = availableItems.concat(this.state.availableItems || []);
 
         await new Promise(res => {
             this.setState({
@@ -192,9 +190,10 @@ export default class BilllingComponent extends Component {
                             {
                                 this.state.availableItems.length == 0 && this.state.loading == false ?
                                     <Text>{this.state.i18n.standartAbone}</Text> :
-                                    this.state.availableItems.filter((x, i) => this.state.availableItems.indexOf(x) == i).map(type => {
-                                        return <Text key={type}>{this.state.productList.find(x => x.productId == type).title}</Text>
-                                    })
+                                    this.state.productList.length > 0 ?
+                                        this.state.availableItems.filter((x, i) => this.state.availableItems.indexOf(x) == i).map(type => {
+                                            return <Text key={type}>{this.state.productList.find(x => x.productId == type).title}</Text>
+                                        }) : <Text>{this.state.i18n.standartAbone}</Text>
                             }
                             {
                                 this.state.availableItems.length == 0 ?
