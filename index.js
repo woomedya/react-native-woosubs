@@ -233,7 +233,7 @@ export default class BilllingComponent extends Component {
                         key={this.getColum() || "numColumns"}
                         data={this.state.productList.filter(p => this.state.availableItems.indexOf(p.productId) == -1)}
                         renderItem={this.renderItem}
-                        style={{ flex: 1, padding: 10, flexDirection: "row" }}
+                        style={{ flex: 1, left: -3, padding: 10, flexDirection: "row" }}
                         numColumns={this.getColum()}
                         keyExtractor={(item, index) => index.toString()}
                     />
