@@ -9,7 +9,6 @@ import opts from './config';
 import i18n from './libs/locales';
 import * as purchaseStore from './libs/stores/Purchases';
 
-const width = Dimensions.get('window').width / 2 - 15;
 
 export const config = ({
     wooServerUrl, publicKey, privateKey, tokenTimeout, lang,
@@ -156,8 +155,8 @@ export default class BilllingComponent extends Component {
     }
 
     renderItem = ({ item }) => {
-        return <View style={styles.contetn}>
-            <View style={[styles.root]}>
+        return <View style={[styles.contetn, { width: this.getColumWidth(), marginHorizontal: this.getColum() > 2 ? 2 : 4, }]}>
+            <View style={[styles.root]} >
                 <PricingCard
                     color={opts.primaryColor}
                     title={item.title}
@@ -172,11 +171,17 @@ export default class BilllingComponent extends Component {
             </View>
         </View>
     }
+    getColumWidth = () => {
+        return (this.props.width || Dimensions.get('window').width) / this.getColum() - (this.getColum() * 7.5)
+    }
+    getColum = () => {
+        return this.props.numColumns || 2
+    }
 
     render() {
         return (
             <View style={styles.container}>
-                <ScrollView style={{ alignSelf: 'stretch', }}  >
+                <ScrollView style={{ flex: 1, alignSelf: 'stretch', }}  >
                     <View style={styles.containerBody}>
                         <View style={styles.headerRow}>
                             <View style={styles.rowHeader}>
@@ -225,10 +230,11 @@ export default class BilllingComponent extends Component {
                     </View>
 
                     <FlatList
-                        style={{ flex: 1, left: 7 }}
+                        key={this.getColum() || "numColumns"}
                         data={this.state.productList.filter(p => this.state.availableItems.indexOf(p.productId) == -1)}
                         renderItem={this.renderItem}
-                        numColumns={2}
+                        style={{ flex: 1, padding: 10, flexDirection: "row" }}
+                        numColumns={this.getColum()}
                         keyExtractor={(item, index) => index.toString()}
                     />
 
@@ -279,9 +285,8 @@ const styles = StyleSheet.create({
     },
     star: { fontSize: 50, marginBottom: 10 },
     contetn: {
-        marginHorizontal: 4,
+
         marginBottom: 7,
-        width: width,
         elevation: 3,
     },
     root: {
